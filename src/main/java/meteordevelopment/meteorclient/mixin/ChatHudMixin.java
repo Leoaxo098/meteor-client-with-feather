@@ -155,8 +155,13 @@ public abstract class ChatHudMixin implements IChatHud {
 
     @ModifyReceiver(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/OrderedText;III)I"))
     private DrawContext onRender_beforeDrawTextWithShadow(DrawContext context, TextRenderer textRenderer, OrderedText text, int x, int y, int color, @Local ChatHudLine.Visible line) {
-        getBetterChat().drawPlayerHead(context, line, y, color);
+        getBetterChat().beforeDrawMessage(context, line, y, color);
         return context;
+    }
+
+    @Inject(method = "render", at = @At("TAIL"))
+    private void onRender_afterDrawTextWithShadow(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo info) {
+        getBetterChat().afterDrawMessage(context);
     }
 
     // No Message Signature Indicator
