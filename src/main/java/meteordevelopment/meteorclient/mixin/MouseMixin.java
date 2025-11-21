@@ -20,8 +20,28 @@ import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
 @Mixin(Mouse.class)
 public abstract class MouseMixin {
+    // Check if Feather Client is present
+    private static boolean isFeatherPresent() {
+        try {
+            Class.forName("feather.FeatherClient");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+    
+    // Check if we should let Feather handle input
+    private static boolean shouldLetFeatherHandle() {
+        return isFeatherPresent();
+    }
+
     @Inject(method = "onMouseButton", at = @At("HEAD"), cancellable = true)
     private void onMouseButton(long window, int button, int action, int mods, CallbackInfo info) {
+        // If Feather is present, let it handle mouse buttons
+        if (shouldLetFeatherHandle()) {
+            return;
+        }
+        
         Input.setButtonState(button, action != GLFW_RELEASE);
 
         if (MeteorClient.EVENT_BUS.post(MouseButtonEvent.get(button, KeyAction.get(action))).isCancelled()) info.cancel();
@@ -29,6 +49,11 @@ public abstract class MouseMixin {
 
     @Inject(method = "onMouseScroll", at = @At("HEAD"), cancellable = true)
     private void onMouseScroll(long window, double horizontal, double vertical, CallbackInfo info) {
+        // If Feather is present, let it handle mouse scrolling
+        if (shouldLetFeatherHandle()) {
+            return;
+        }
+        
         if (MeteorClient.EVENT_BUS.post(MouseScrollEvent.get(vertical)).isCancelled()) info.cancel();
     }
 }
