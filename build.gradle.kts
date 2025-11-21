@@ -90,7 +90,7 @@ dependencies {
     // Baritone (https://github.com/MeteorDevelopment/baritone)
     modCompileOnly("meteordevelopment:baritone:${properties["baritone_version"] as String}-SNAPSHOT")
     // ModMenu (https://github.com/TerraformersMC/ModMenu)
-    modCompileOnly("com.terraformersmc:modmenu:${properties["modmenu_version"] as String}")
+    modCompileOnly "com.terraformersmc:modmenu:15.0.0"
 
     // Libraries
     library("meteordevelopment:orbit:${properties["orbit_version"] as String}")
