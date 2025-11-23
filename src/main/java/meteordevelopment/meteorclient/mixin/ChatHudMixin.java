@@ -159,8 +159,11 @@ public abstract class ChatHudMixin implements IChatHud {
         return context;
     }
 
+    // FIXED: Updated method signature to match Minecraft 1.21.8
+    // Changed from (DrawContext, int, int, float, CallbackInfo)
+    // to (DrawContext, int, int, int, boolean, CallbackInfo)
     @Inject(method = "render", at = @At("TAIL"))
-    private void onRender_afterDrawTextWithShadow(DrawContext context, int mouseX, int mouseY, float delta, CallbackInfo info) {
+    private void onRender_afterDrawTextWithShadow(DrawContext context, int mouseX, int mouseY, int tickDelta, boolean focused, CallbackInfo info) {
         getBetterChat().afterDrawMessage(context);
     }
 
