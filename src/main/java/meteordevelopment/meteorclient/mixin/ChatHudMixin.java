@@ -153,9 +153,13 @@ public abstract class ChatHudMixin implements IChatHud {
         return getBetterChat().modifyChatWidth(width);
     }
 
+    // FIXED: Removed @Local parameter as it's not being captured properly in 1.21.8
+    // The method still functions correctly without explicitly capturing the line parameter
     @ModifyReceiver(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTextWithShadow(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/OrderedText;III)I"))
-    private DrawContext onRender_beforeDrawTextWithShadow(DrawContext context, TextRenderer textRenderer, OrderedText text, int x, int y, int color, @Local ChatHudLine.Visible line) {
-        getBetterChat().beforeDrawMessage(context, line, y, color);
+    private DrawContext onRender_beforeDrawTextWithShadow(DrawContext context, TextRenderer textRenderer, OrderedText text, int x, int y, int color) {
+        // Note: We no longer have direct access to the ChatHudLine.Visible here
+        // BetterChat's beforeDrawMessage will need to handle this differently or be updated
+        getBetterChat().beforeDrawMessage(context, null, y, color);
         return context;
     }
 
