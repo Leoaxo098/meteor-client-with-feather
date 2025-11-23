@@ -77,10 +77,16 @@ public abstract class ClientPlayNetworkHandlerMixin extends ClientCommonNetworkH
     @Inject(method = "onGameJoin", at = @At("TAIL"))
     private void onGameJoinTail(GameJoinS2CPacket packet, CallbackInfo info) {
         if (worldNotNull) {
-            MeteorClient.EVENT_BUS.post(GameLeftEvent.get());
+          MeteorClient.EVENT_BUS.post(GameLeftEvent.get());
         }
 
         MeteorClient.EVENT_BUS.post(GameJoinedEvent.get());
+    
+        // Add this to force close the connecting screen
+        MinecraftClient client = MinecraftClient.getInstance();
+        if (client.currentScreen != null) {
+            client.execute(() -> client.setScreen(null));
+        }
     }
 
     // the server sends a GameJoin packet after the reconfiguration phase
